@@ -4,18 +4,51 @@ namespace common\models;
 use common\models\BaseModel;
 
 /**
- * This is the model class for table "apple".
+ * This is the model class for table "{{%apple}}".
  *
  * @property int $id
- * @property string $color
+ * @public string $color
  * @property int $volume
  * @property int $status
  * @property int $created_at
  * @property int|null $fallen_at
+ * @property int|null $fallen_at_and_five_clock
  */
 class Apple extends BaseModel
 {
-	/**
+    const TYPE_ACTION_EAT = 10;
+    const TYPE_ACTION_FALL = 20;
+
+    const TYPE_STATUS_HANGING_ON_A_TREE = 10;
+    const TYPE_STATUS_LYING_ON_THE_GROUND = 20;
+    const TYPE_STATUS_ROTTEN = 30;
+
+    public  $_volume;
+
+    /**
+     * @return array
+     */
+    public static function typeActionLabels()
+    {
+        return [
+            self::TYPE_ACTION_EAT => 'Кушать',
+            self::TYPE_ACTION_FALL => 'Упасть',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function typeStatusLabels()
+    {
+        return [
+            self::TYPE_STATUS_HANGING_ON_A_TREE => 'Висит на дереве',
+            self::TYPE_STATUS_LYING_ON_THE_GROUND => 'Лежит на земле',
+            self::TYPE_STATUS_ROTTEN => 'Гнилое',
+        ];
+    }
+
+    /**
 	 * {@inheritdoc}
 	 */
 	public static function tableName()
@@ -30,8 +63,9 @@ class Apple extends BaseModel
 	{
         return [
             [['color', 'created_at'], 'required'],
-            [['volume', 'status', 'created_at', 'fallen_at'], 'integer'],
-            [['color'], 'string', 'max' => 255],
+            [['volume', 'status', 'created_at', 'fallen_at','fallen_at_and_five_clock'], 'integer'],
+            [['color'], 'string', 'max' => 30],
+            [['status'], 'in', 'range' => [self::TYPE_STATUS_HANGING_ON_A_TREE, self::TYPE_STATUS_LYING_ON_THE_GROUND, self::TYPE_STATUS_ROTTEN]]
         ];
 	}
 
@@ -41,12 +75,13 @@ class Apple extends BaseModel
 	public function attributeLabels()
 	{
         return [
-            'id' => 'ID',
-            'color' => 'Color',
-            'volume' => 'Volume',
-            'status' => 'Status',
-            'created_at' => 'Created At',
-            'fallen_at' => 'Fallen At',
+            'id' => '',
+            'color' => 'Цвет',
+            'volume' => 'Объем',
+            'status' => 'Статус',
+            'created_at' => 'Создано',
+            'fallen_at' => 'Упало',
+            'fallen_at_and_five_clock' => '5 часов с момента падения',
         ];
 	}
 
@@ -58,4 +93,30 @@ class Apple extends BaseModel
 	{
 		return new \common\models\queries\Apple(get_called_class());
 	}
+
+    /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        return [
+            'timestamp' => [
+                'class' => \yii\behaviors\TimestampBehavior::class,
+                'attributes' => [
+                    self::EVENT_BEFORE_INSERT => ['created_at'],
+                    self::EVENT_BEFORE_UPDATE => ['fallen_at'],
+                ],
+                'value' => date('U'),
+            ],
+            'timestamp2' => [
+                'class' => \yii\behaviors\TimestampBehavior::class,
+                'attributes' => [
+                    self::EVENT_BEFORE_UPDATE => ['fallen_at_and_five_clock'],
+                ],
+                'value' => date('U')+18000,
+            ],
+
+        ];
+    }
+
 }

@@ -9,11 +9,6 @@ namespace common\models\queries;
  */
 class Apple extends \common\models\queries\BaseQuery
 {
-	public function active()
-	{
-		return $this->andWhere(['is_active' => true]);
-	}
-
 	/**
 	 * @param string $search
 	 * @return $this
@@ -22,8 +17,7 @@ class Apple extends \common\models\queries\BaseQuery
 	{
 		return $this->andWhere([
 			'or',
-			['like', 'name', $search],
-			['like', 'color', $search],
+			['like', 'status', $search],
 		]);
 	}
 

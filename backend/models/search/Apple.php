@@ -14,7 +14,7 @@ class Apple extends AppleModel
 	public function rules()
 	{
 		return [
-			[['status','created_at'], 'safe'],
+			[['status'], 'safe'],
 		];
 	}
 
@@ -62,8 +62,10 @@ class Apple extends AppleModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			'id' => $this->id,
+			'status' => $this->status,
 		]);
+
+//        \Yii::error($query);
 
 		return $dataProvider;
 	}

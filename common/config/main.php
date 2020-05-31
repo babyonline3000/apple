@@ -9,5 +9,9 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'formatter' => [
+            'timeZone' => 'Europe/Moscow',
+            'defaultTimeZone' => 'Europe/Moscow',
+        ],
     ],
 ];
