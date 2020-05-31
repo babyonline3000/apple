@@ -12,7 +12,6 @@ use common\models\BaseModel;
  * @property int $status
  * @property int $created_at
  * @property int|null $fallen_at
- * @property int|null $fallen_at_and_five_clock
  */
 class Apple extends BaseModel
 {
@@ -63,7 +62,7 @@ class Apple extends BaseModel
 	{
         return [
             [['color', 'created_at'], 'required'],
-            [['volume', 'status', 'created_at', 'fallen_at','fallen_at_and_five_clock'], 'integer'],
+            [['volume', 'status', 'created_at', 'fallen_at'], 'integer'],
             [['color'], 'string', 'max' => 30],
             [['status'], 'in', 'range' => [self::TYPE_STATUS_HANGING_ON_A_TREE, self::TYPE_STATUS_LYING_ON_THE_GROUND, self::TYPE_STATUS_ROTTEN]]
         ];
@@ -81,7 +80,6 @@ class Apple extends BaseModel
             'status' => 'Статус',
             'created_at' => 'Создано',
             'fallen_at' => 'Упало',
-            'fallen_at_and_five_clock' => '5 часов с момента падения',
         ];
 	}
 
@@ -108,14 +106,6 @@ class Apple extends BaseModel
                 ],
                 'value' => date('U'),
             ],
-            'timestamp2' => [
-                'class' => \yii\behaviors\TimestampBehavior::class,
-                'attributes' => [
-                    self::EVENT_BEFORE_UPDATE => ['fallen_at_and_five_clock'],
-                ],
-                'value' => date('U')+18000,
-            ],
-
         ];
     }
 

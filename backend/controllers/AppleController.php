@@ -110,7 +110,8 @@ class AppleController extends BaseController
 
     public function beforeAction($action)
     {
-        Apple::updateAll(['status' => Apple::TYPE_STATUS_ROTTEN], ['<=','fallen_at_and_five_clock',date('U')]);
+        $time = 18000;//TODO количество времени в секундах, при котором яблоки считаются испорченными
+        Apple::updateAll(['status' => Apple::TYPE_STATUS_ROTTEN], ['<=','fallen_at',(date('U')-$time)]);
         return parent::beforeAction($action);
     }
 
